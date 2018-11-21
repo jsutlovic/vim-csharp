@@ -12,12 +12,18 @@ let b:did_indent = 1
 
 setlocal indentexpr=GetCSIndent(v:lnum)
 
-function! s:IsCompilerDirective(line)
-  return a:line =~? '^\s*#'
+function! s:IsCompilerDirective(line, lnum)
+  if a:line =~? '^\s*#'
+    return 1
+  endif
+  return synIDattr(synID(a:lnum,1,1),"name") == "csPreCondit"
 endf
 
-function! s:IsAttributeLine(line)
-  return a:line =~? '^\s*\[[A-Za-z]' && a:line =~? '\]$'
+function! s:IsAttributeLine(line, lnum)
+  if a:line =~? '^\s*\[[A-Za-z]' && a:line =~? '\]$'
+    return 1
+  endif
+  return synIDattr(synID(a:lnum,1,1),"name") == "csAttribute"
 endf
 
 function! FindPreviousNonCompilerDirectiveLine(start_lnum)
