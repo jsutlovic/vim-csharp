@@ -20,6 +20,10 @@ function! s:IsAttributeLine(line)
   return a:line =~? '^\s*\[[A-Za-z]' && a:line =~? '\]$'
 endf
 
+function! s:IsOpeningBrace(line)
+  return a:line =~? '^\s*{$'
+endf
+
 function! s:FindPreviousNonCompilerDirectiveLine(start_lnum)
   for delta in range(0, a:start_lnum)
     let lnum = a:start_lnum - delta
@@ -48,7 +52,7 @@ function! GetCSIndent(lnum) abort
 
   let lnum = s:FindPreviousNonCompilerDirectiveLine(a:lnum - 1)
   let previous_code_line = getline(lnum)
-  if s:IsAttributeLine(previous_code_line)
+  if s:IsAttributeLine(previous_code_line) || s:IsOpeningBrace(this_line)
     let ind = indent(lnum)
     return ind
   else
